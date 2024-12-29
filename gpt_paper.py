@@ -10,6 +10,18 @@ import os
 import requests
 import fitz  # PyMuPDF
 import time
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Get configuration from environment variables
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4')  # Default to gpt-4 if not specified
+
+# Validate environment variables
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY not found in .env file. Please add your API key.")
 
 def extract_text_from_pdf(pdf_path):
     """Extracts text content from a PDF file."""
@@ -34,11 +46,11 @@ def send_text_to_gpt(text):
         print("Input text is empty. Skipping process.")
         return ""
 
-    print("Sending text to GPT model...")
+    print(f"Sending text to {OPENAI_MODEL}...")
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer YOUR_API_KEY_HERE"  # Replace with your API key
+        "Authorization": f"Bearer {OPENAI_API_KEY}"
     }
     prompt = (
         f"Analyze the following text and provide a detailed evaluation according to scientific review process. Output format should be:\n"
@@ -74,7 +86,7 @@ def send_text_to_gpt(text):
         "Note: Technical terms (e.g., Multiscale Geographically Weighted Regression - MGRW) should be kept as is without translation."
     )
     data = {
-        "model": "gpt-4",
+        "model": OPENAI_MODEL,
         "messages": [
             {"role": "user", "content": prompt}
         ],
@@ -121,8 +133,8 @@ def process_pdfs_in_directory(directory_path, output_directory):
                 print(f"Error processing {filename}, results not saved.")
 
 if __name__ == "__main__":
-    pdf_directory = "Papers_Eng"  # Directory containing PDF files
-    output_directory = "Papers_Tr"  # Directory for saving results
+    pdf_directory = "Papers"     # Directory containing PDF files
+    output_directory = "Result"  # Directory for saving results
     print("Starting PDF processing...")
     process_pdfs_in_directory(pdf_directory, output_directory)
     print("PDF processing completed.")
