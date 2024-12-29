@@ -22,10 +22,13 @@ git clone [repository-url]
 pip install -r requirements.txt
 ```
 
-3. Update your OpenAI API key in `main.py`:
+3. Add your OpenAI API key in `gpt_paper.py`:
 ```python
-"Authorization": "Bearer YOUR_API_KEY_HERE"  # Add your API key here
+# Add your OpenAI API key here
+openai.api_key = "your-api-key-here"  # Replace with your actual API key
 ```
+
+You can get your API key from: https://platform.openai.com/api-keys
 
 ## Usage
 
@@ -33,7 +36,7 @@ pip install -r requirements.txt
 
 2. Run the program:
 ```bash
-python main.py
+python gpt_paper.py
 ```
 
 3. Processed results will be created in the `Papers_Tr` directory.
