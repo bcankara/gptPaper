@@ -1,0 +1,32 @@
+1. Article Citation
+Title: Monitoring 3D areal displacements by a new methodology and software using UAV photogrammetry
+Authors: Kemal Özgür Hastaoğlu, Yavuz Gül, Fatih Poyraz, Burak Can Kara
+Journal: International Journal of Applied Earth Observation and Geoinformation 
+Volume and Issue: 83
+Publication Date: 2019
+DOI: 10.1016/j.jag.2019.101916
+Publisher: Elsevier
+
+2. Research Purpose and Hypothesis
+Research Topic: The research focuses on the monitoring of 3D areal displacements, particularly the potential use of UAV (Unmanned Aerial Vehicle) photogrammetry in monitoring movements with large mass.
+Hypothesis/Problem Statement: A new methodology using UAV photogrammetry technology can be successful in monitoring and analyzing 3D areal displacements.
+
+3. Participants and Study Area
+Participant Information: The research was not conducted on a specific subject population, therefore this information is not available.
+Study Area: Sivas Cumhuriyet University, Turkey
+
+4. Methodology
+Data Collection Method: Three periods of flights using UAV photogrammetry method.
+Tools/Instruments Used: UAV, GNSS, Kalman Filtering Technique, Interpolation Maps
+Data Analysis Method: Statistical analyses (t-test, f-test, RMSE, VAF).
+
+5. Results
+Key Findings: It was found that significant velocity values greater than 1.5 × GSD could be successfully determined with those obtained from GNSS. Cyrano maps were created to compare areal displacements between GNSS and UAV velocity values.
+Statistical Results: Correlation values were found to be 0.92, 0.75, and 0.87 respectively.
+
+6. Authors' Recommendations and Discussion
+Research Success Status: According to the research, it was concluded that UAV photogrammetry has the ability to monitor 3D areal displacements.
+Authors' Recommendations and Future Research: The authors recommend further exploration of UAV photogrammetry technology's potential in this field and propose a framework for future studies.
+
+7. Scientific Contribution and Strengths/Weaknesses
+Strengths: This study provides an alternative method in 3D motion monitoring and introduces a new methodology.
