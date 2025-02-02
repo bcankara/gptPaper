@@ -1,9 +1,10 @@
 # Core dependencies
 PyMuPDF==1.23.8          # PDF processing and text extraction
-requests==2.31.0         # HTTP requests for OpenAI API communication
+requests==2.31.0         # HTTP requests for API communication
 
-# OpenAI integration
+# API integrations
 openai==1.3.5            # OpenAI API client library
+deepseek==0.0.3         # DeepSeek API client library
 
 # Configuration management
 python-dotenv==1.0.0     # Environment variables management (.env file support) 

@@ -1,15 +1,16 @@
 # Scientific PDF Analysis Tool
 
-A Python application that processes scientific papers in PDF format and generates detailed scientific analyses using the GPT-4 API.
+A Python application that processes scientific papers in PDF format and generates detailed scientific analyses using AI models (OpenAI GPT or DeepSeek).
 
 ## Features
 
 - Text extraction from PDF files
-- Scientific analysis using GPT-4 API
+- Scientific analysis using AI models (OpenAI GPT-4/3.5 or DeepSeek)
+- Multiple AI provider support
 - Batch PDF processing
 - Automatic result reporting
 - Error handling and retry mechanism
-- Configurable OpenAI model selection
+- Configurable model selection
 
 ## Installation
 
@@ -25,17 +26,24 @@ pip install -r requirements.txt
 
 3. Create a `.env` file in the project root directory:
    - Copy `.env.example` to `.env`
-   - Add your OpenAI API key
-   - Select your preferred model (gpt-4 or gpt-3.5-turbo)
+   - Add your API keys (OpenAI and/or DeepSeek)
+   - Select your preferred API provider and model
 
 Example `.env` file:
 ```bash
-# OpenAI Configuration
-OPENAI_API_KEY=your-api-key-here
-OPENAI_MODEL=gpt-4  # Options: gpt-4, gpt-3.5-turbo
+# API Configuration
+OPENAI_API_KEY=your-openai-api-key-here
+DEEPSEEK_API_KEY=your-deepseek-api-key-here
+
+# Model Selection
+API_PROVIDER=openai     # Options: openai, deepseek
+MODEL_NAME=gpt-4       # OpenAI options: gpt-4, gpt-3.5-turbo
+                      # DeepSeek options: deepseek-chat, deepseek-coder
 ```
 
-You can get your API key from: https://platform.openai.com/api-keys
+You can get your API keys from:
+- OpenAI API key: https://platform.openai.com/api-keys
+- DeepSeek API key: https://platform.deepseek.ai/api-keys
 
 ## Usage
 
@@ -57,12 +65,15 @@ python gpt_paper.py
 ## Important Notes
 
 ### API Token Usage
-- Each PDF analysis consumes OpenAI API tokens
+- Each PDF analysis consumes API tokens
 - Token consumption depends on:
   - Length of the PDF document
-  - Selected GPT model (GPT-4 costs more than GPT-3.5-turbo)
+  - Selected model (GPT-4 costs more than GPT-3.5-turbo)
+  - Selected API provider (pricing varies between OpenAI and DeepSeek)
   - Number of API calls made
-- Monitor your OpenAI API usage at: https://platform.openai.com/usage
+- Monitor your API usage at:
+  - OpenAI: https://platform.openai.com/usage
+  - DeepSeek: https://platform.deepseek.ai/usage
 
 ### Processing Time
 - Processing time varies based on:
@@ -70,13 +81,15 @@ python gpt_paper.py
   - Number of files being processed
   - API response time
   - Rate limiting and retry mechanisms
+  - Selected API provider and model
 
 ### Best Practices
 - Start with a small number of PDFs to test the system
 - Monitor the console output for processing status
 - Keep PDFs in English for best results
 - Ensure PDFs are text-searchable (not scanned images)
-- Check your API key has sufficient credits before processing large batches
+- Check your API keys have sufficient credits before processing large batches
+- Compare results between different models and providers
 
 ## Output Format
 

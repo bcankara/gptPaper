@@ -11,17 +11,23 @@ import requests
 import fitz  # PyMuPDF
 import time
 from dotenv import load_dotenv
+import openai
+import deepseek
 
 # Load environment variables
 load_dotenv()
 
 # Get configuration from environment variables
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4')  # Default to gpt-4 if not specified
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
+API_PROVIDER = os.getenv('API_PROVIDER', 'openai')  # Default to OpenAI
+MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-4')      # Default model
 
 # Validate environment variables
-if not OPENAI_API_KEY:
+if API_PROVIDER == 'openai' and not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY not found in .env file. Please add your API key.")
+elif API_PROVIDER == 'deepseek' and not DEEPSEEK_API_KEY:
+    raise ValueError("DEEPSEEK_API_KEY not found in .env file. Please add your API key.")
 
 def extract_text_from_pdf(pdf_path):
     """Extracts text content from a PDF file."""
@@ -40,18 +46,14 @@ def extract_text_from_pdf(pdf_path):
         print(f"Error extracting text from PDF: {e}")
         return ""
 
-def send_text_to_gpt(text):
-    """Sends text to GPT model and returns detailed analysis in scientific review format."""
+def send_text_to_api(text):
+    """Sends text to selected API model and returns detailed analysis."""
     if not text:
         print("Input text is empty. Skipping process.")
         return ""
 
-    print(f"Sending text to {OPENAI_MODEL}...")
-    url = "https://api.openai.com/v1/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
-    }
+    print(f"Sending text to {API_PROVIDER} ({MODEL_NAME})...")
+    
     prompt = (
         f"Analyze the following text and provide a detailed evaluation according to scientific review process. Output format should be:\n"
         "1. Article Citation\n"
@@ -85,28 +87,33 @@ def send_text_to_gpt(text):
         f"Text: {text}\n"
         "Note: Technical terms (e.g., Multiscale Geographically Weighted Regression - MGRW) should be kept as is without translation."
     )
-    data = {
-        "model": OPENAI_MODEL,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ],
-        "max_tokens": 800
-    }
-    while True:
-        try:
-            response = requests.post(url, headers=headers, json=data)
-            if response.status_code == 200:
-                print("Successfully received response from GPT model.")
-                return response.json().get("choices", [{}])[0].get("message", {}).get("content", "")
-            elif response.status_code == 429:
-                print(f"Error: {response.status_code}, {response.text}. Waiting...")
-                time.sleep(15)  # Wait when rate limit is reached
-            else:
-                print(f"Error: {response.status_code}, {response.text}")
-                return ""
-        except requests.exceptions.RequestException as e:
-            print(f"API request error: {e}")
-            return ""
+
+    try:
+        if API_PROVIDER == 'openai':
+            openai.api_key = OPENAI_API_KEY
+            response = openai.ChatCompletion.create(
+                model=MODEL_NAME,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=800
+            )
+            return response.choices[0].message.content
+
+        elif API_PROVIDER == 'deepseek':
+            deepseek.api_key = DEEPSEEK_API_KEY
+            response = deepseek.ChatCompletion.create(
+                model=MODEL_NAME,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=800
+            )
+            return response.choices[0].message.content
+
+    except Exception as e:
+        print(f"API request error: {e}")
+        if "rate limit" in str(e).lower():
+            print("Rate limit reached. Waiting 15 seconds...")
+            time.sleep(15)
+            return send_text_to_api(text)  # Retry
+        return ""
 
 def process_pdfs_in_directory(directory_path, output_directory):
     """Processes PDF files in the specified directory and saves the results."""
@@ -120,13 +127,13 @@ def process_pdfs_in_directory(directory_path, output_directory):
             print(f"Processing file: {filename}")
             pdf_path = os.path.join(directory_path, filename)
             text = extract_text_from_pdf(pdf_path)
-            gpt_response = send_text_to_gpt(text)
+            api_response = send_text_to_api(text)
 
-            if gpt_response:
+            if api_response:
                 # Save the result
                 output_file_path = os.path.join(output_directory, f"{os.path.splitext(filename)[0]}_output.txt")
                 with open(output_file_path, "w", encoding="utf-8") as output_file:
-                    output_file.write(gpt_response)
+                    output_file.write(api_response)
 
                 print(f"Processed {filename} and saved results to {output_file_path}")
             else:
